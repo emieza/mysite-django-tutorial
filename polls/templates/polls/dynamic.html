@@ -1,0 +1,60 @@
+
+<h1>Forms dinàmics</h1>
+
+<select name="question" id="question" onchange="carrega_choices()">
+	<option>...selecciona la pregunta...</option>
+</select>
+
+<br><br>
+
+<select name="choice" id="choice" disabled>
+	<option>...selecciona primer la pregunta...</option>
+</select>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+// executar al carregar pàgina (millor al onload)
+$.ajax({
+  method: "GET",
+  url: "/api/get_questions",
+})
+  .done(function( msg ) {
+    //alert( "Data Saved: " + JSON.stringify(msg) );
+    for( let i in msg.questions ) {
+    	text = msg.questions[i].question_text
+    	id = msg.questions[i].id
+    	let item = $("<option value='"+id+"'>"+text+"</option>");
+    	$("#question").append(item);
+    }
+});
+
+
+function carrega_choices() {
+
+	question_id = $("#question").val();
+
+	$.ajax({
+	  method: "GET",
+	  url: "/api/get_choices/"+question_id,
+	})
+	  .done(function( msg ) {
+		// habilitar i buidar form
+	    $("#choice").prop("disabled",false);
+	    $("#choice").empty();
+
+	    for( let i in msg.choices ) {
+	    	text = msg.choices[i].choice_text
+	    	id = msg.choices[i].id
+	    	console.log(text)
+	    	let item = $("<option value='"+id+"'>"+text+"</option>");
+	    	$("#choice").append(item);
+	    }
+	});
+}
+
+
+</script>

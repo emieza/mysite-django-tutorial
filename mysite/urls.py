@@ -18,10 +18,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from polls import views
+from polls import views, api
 
 urlpatterns = [
     path("", views.index),
     path("polls/", include("polls.urls")),
     path("admin/", admin.site.urls),
+    
+    # api
+    path("api/get_questions", api.get_questions ),
+    path("api/get_choices/<int:question_id>", api.get_choices ),
+
 ]
